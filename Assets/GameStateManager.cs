@@ -176,7 +176,7 @@ public class GameStateManager : MonoBehaviour
 
     public void ChangeToGameplay()
     {
-        LevelManager.INSTANCE.LoadLevel("spmap_gp1");
+        LevelManager.INSTANCE.LoadLevel("SampleScene");
 
         //ChangeState(GameState.GAMEPLAY);
     }
