@@ -38,11 +38,11 @@ public class LevelManager : MonoBehaviour
 
             yield return new WaitForSecondsRealtime(1);
 
-            if (sceneToLoad != null)
-            {
-                SceneManager.LoadScene(levelName, LoadSceneMode.Additive);
-                activeLevel = levelName;
-            }
+            //if (sceneToLoad != null)
+            //{
+            //  SceneManager.LoadScene(levelName, LoadSceneMode.Additive);
+            //activeLevel = levelName;
+            //}
         }
 
         if (loadGame)
