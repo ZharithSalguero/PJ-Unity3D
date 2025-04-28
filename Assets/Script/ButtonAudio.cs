@@ -1,13 +1,16 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ButtonSound : MonoBehaviour, IPointerEnterHandler
+public class ButtonSound : MonoBehaviour, IPointerClickHandler
 {
     public AudioClip clip;
 
-    public void OnPointerEnter(PointerEventData eventData)
+    public void OnPointerClick(PointerEventData eventData)
     {
         Debug.Log("The cursor entered the selectable UI element.");
         AudioManager.INSTANCE.source.PlayOneShot(clip);
+
     }
 }
+
+
