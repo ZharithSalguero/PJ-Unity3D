@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+// Gamestate pattern
 public class GameStateManager : MonoBehaviour
 {
     public static GameStateManager INSTANCE;
@@ -24,13 +25,20 @@ public class GameStateManager : MonoBehaviour
 
     void Awake()
     {
+        if (INSTANCE == null)
+        {
+            INSTANCE = this;
+        }
+        else if (INSTANCE != this)
+        {
+            Destroy(gameObject);
+        }
 
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        INSTANCE = this;
     }
 
     void Update()
@@ -43,6 +51,7 @@ public class GameStateManager : MonoBehaviour
         ChangeState((GameState)state);
     }
 
+    // Method to change current gamestate
     public void ChangeState(GameState state)
     {
         Debug.Log("Gamestate changed: " + state);
@@ -114,7 +123,8 @@ public class GameStateManager : MonoBehaviour
                 break;
             case GameState.LOAD:
                 {
-
+                    //UIPauseMenu menu = FindObjectOfType<UIPauseMenu>(true);
+                    //menu.gameObject.SetActive(true);
                 }
                 break;
             case GameState.PAUSE:
@@ -176,7 +186,7 @@ public class GameStateManager : MonoBehaviour
 
     public void ChangeToGameplay()
     {
-        LevelManager.INSTANCE.LoadLevel("SampleScene");
+        LevelManager.INSTANCE.LoadLevel("Test");
 
         //ChangeState(GameState.GAMEPLAY);
     }
