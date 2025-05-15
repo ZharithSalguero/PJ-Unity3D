@@ -1,44 +1,115 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
-public class PlayerController : MonoBehaviour
+[RequireComponent(typeof(CharacterController))]
+public class PlayerMovement : MonoBehaviour
 {
-    public float moveSpeed = 5f;
-    public float jumpForce = 5f;
+    public float walkSpeed = 5f;
+    public float crouchSpeed = 2f;
+    public float crawlSpeed = 1.5f;
+    public float gravity = -9.81f;
+    public float jumpHeight = 1.5f;
+    public Transform groundCheck;
+    public float groundDistance = 0.4f;
+    public LayerMask groundMask;
 
-    private Rigidbody rb;
+    private CharacterController controller;
+    private Vector3 velocity;
     private bool isGrounded;
+    private int jumpCount = 0;
+    private bool isCrouching = false;
+    private bool isCrawling = false;
+    private float originalHeight;
+
+    public float crouchHeight = 1f;
+    public float crawlHeight = 0.5f;
+
+    [HideInInspector] public float currentSpeed;
 
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        controller = GetComponent<CharacterController>();
+        originalHeight = controller.height;
+        currentSpeed = walkSpeed; // Inicializamos con velocidad de caminar
     }
 
     void Update()
     {
-        // Movimiento lateral
-        float moveX = Input.GetAxis("Horizontal");
-        float moveZ = Input.GetAxis("Vertical");
+        GroundCheck();
+        HandleMovement();
+        HandleJump();
+        HandleCrouch();
+        HandleCrawl();
+    }
 
-        Vector3 movement = new Vector3(moveX, 0f, moveZ) * moveSpeed;
-        Vector3 newVelocity = new Vector3(movement.x, rb.linearVelocity.y, movement.z);
-        rb.linearVelocity = newVelocity;
-
-        // Saltar
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+    void GroundCheck()
+    {
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+        if (isGrounded && velocity.y < 0)
         {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            velocity.y = -2f;
+            jumpCount = 0; // Reset salto doble al tocar el suelo
         }
     }
 
-    // Detectar si toca el suelo
-    private void OnCollisionStay(Collision collision)
+    void HandleMovement()
     {
-        isGrounded = true;
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
+
+        Vector3 move = transform.right * x + transform.forward * z;
+        controller.Move(move * currentSpeed * Time.deltaTime);
+
+        // Aplicar gravedad
+        velocity.y += gravity * Time.deltaTime;
+        controller.Move(velocity * Time.deltaTime);
     }
 
-    private void OnCollisionExit(Collision collision)
+    void HandleJump()
     {
-        isGrounded = false;
+        if (Input.GetButtonDown("Jump") && (isGrounded || jumpCount < 1))
+        {
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            jumpCount++;
+        }
+    }
+
+    void HandleCrouch()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+        {
+            isCrouching = !isCrouching;
+
+            if (isCrouching)
+            {
+                controller.height = crouchHeight;
+                currentSpeed = crouchSpeed;
+            }
+            else
+            {
+                controller.height = originalHeight;
+                currentSpeed = walkSpeed;
+            }
+        }
+    }
+
+    void HandleCrawl()
+    {
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            isCrawling = !isCrawling;
+
+            if (isCrawling)
+            {
+                controller.height = crawlHeight;
+                currentSpeed = crawlSpeed;
+                Debug.Log("Modo arrastrarse activado");
+            }
+            else
+            {
+                controller.height = originalHeight;
+                currentSpeed = walkSpeed;
+                Debug.Log("Modo arrastrarse desactivado");
+            }
+        }
     }
 }
