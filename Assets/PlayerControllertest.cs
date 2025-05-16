@@ -3,14 +3,28 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("Velocidades")]
     public float walkSpeed = 5f;
     public float crouchSpeed = 2f;
     public float crawlSpeed = 1.5f;
+
+    [Header("Salto y Gravedad")]
     public float gravity = -9.81f;
     public float jumpHeight = 1.5f;
+
+    [Header("Detección de Suelo")]
     public Transform groundCheck;
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
+
+    [Header("Cámara (Cinemachine)")]
+    public Transform cameraTransform;
+
+    [Header("Alturas")]
+    public float crouchHeight = 1f;
+    public float crawlHeight = 0.5f;
+
+    [HideInInspector] public float currentSpeed;
 
     private CharacterController controller;
     private Vector3 velocity;
@@ -19,17 +33,13 @@ public class PlayerMovement : MonoBehaviour
     private bool isCrouching = false;
     private bool isCrawling = false;
     private float originalHeight;
-
-    public float crouchHeight = 1f;
-    public float crawlHeight = 0.5f;
-
-    [HideInInspector] public float currentSpeed;
+    private float _turnVelocity;
 
     void Start()
     {
         controller = GetComponent<CharacterController>();
         originalHeight = controller.height;
-        currentSpeed = walkSpeed; // Inicializamos con velocidad de caminar
+        currentSpeed = walkSpeed;
     }
 
     void Update()
@@ -47,17 +57,26 @@ public class PlayerMovement : MonoBehaviour
         if (isGrounded && velocity.y < 0)
         {
             velocity.y = -2f;
-            jumpCount = 0; // Reset salto doble al tocar el suelo
+            jumpCount = 0;
         }
     }
 
     void HandleMovement()
     {
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
+        float horizontal = Input.GetAxis("Horizontal");
+        float vertical = Input.GetAxis("Vertical");
 
-        Vector3 move = transform.right * x + transform.forward * z;
-        controller.Move(move * currentSpeed * Time.deltaTime);
+        Vector3 inputDirection = new Vector3(horizontal, 0f, vertical).normalized;
+
+        if (inputDirection.magnitude >= 0.1f)
+        {
+            float targetAngle = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + cameraTransform.eulerAngles.y;
+            float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref _turnVelocity, 0.1f);
+            transform.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
+
+            Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+            controller.Move(moveDir.normalized * currentSpeed * Time.deltaTime);
+        }
 
         // Aplicar gravedad
         velocity.y += gravity * Time.deltaTime;
