@@ -1,18 +1,18 @@
 using UnityEngine;
+using System.Collections;
 
 public class SetGameState : MonoBehaviour
 {
     public GameStateManager.GameState targetState;
 
-    void Start()
+    IEnumerator Start()
     {
-        if (GameStateManager.INSTANCE != null)
+        // Esperar hasta que GameStateManager esté inicializado
+        while (GameStateManager.INSTANCE == null)
         {
-            GameStateManager.INSTANCE.ChangeState(targetState);
+            yield return null;
         }
-        else
-        {
-            Debug.LogError("GameStateManager.INSTANCE es null. Asegúrate de que el GameObject con GameStateManager esté en la escena.");
-        }
+
+        GameStateManager.INSTANCE.ChangeState(targetState);
     }
 }

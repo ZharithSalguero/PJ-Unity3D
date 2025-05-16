@@ -186,10 +186,10 @@ public class GameStateManager : MonoBehaviour
 
     public void ChangeToGameplay()
     {
-        LevelManager.INSTANCE.LoadLevel("Test");
-
-        //ChangeState(GameState.GAMEPLAY);
+        // Carga la escena directamente
+        SceneManager.LoadScene("Test"); // o el nombre real de tu escena
     }
+
 
     public void ChangeToGameplayImmediate()
     {
