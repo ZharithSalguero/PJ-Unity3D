@@ -1,6 +1,6 @@
-using UnityEngine;
-using TMPro;
 using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
 
 public class ObjectGrabber : MonoBehaviour
 {
@@ -17,7 +17,7 @@ public class ObjectGrabber : MonoBehaviour
     private List<string> inventory = new List<string>();
 
     void Update()
-    {
+    { 
         RaycastForObject();
 
         if (objectToPick != null && grabbedObject == null)
@@ -96,7 +96,6 @@ public class ObjectGrabber : MonoBehaviour
             grabbedObject = null;
         }
     }
-
     void UpdateInventoryText()
     {
         inventoryText.text = "Inventario:\n";
