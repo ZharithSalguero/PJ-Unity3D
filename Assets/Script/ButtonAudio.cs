@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class aaa : MonoBehaviour, IPointerEnterHandler
+public class ButtonAudio : MonoBehaviour, IPointerEnterHandler
 {
     public AudioClip clip;
 
