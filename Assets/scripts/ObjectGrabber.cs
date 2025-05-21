@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ObjectGrabber : MonoBehaviour
 {
-    public float grabDistance = 3f;
+    public float testDistance = 1f;
     public Transform holdPoint;
     public LayerMask grabbableLayer; // Capa "Grabbable"
     public TMP_Text interactionText;
@@ -56,14 +56,16 @@ public class ObjectGrabber : MonoBehaviour
         Ray ray = new Ray(pivot.position, pivot.forward);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, grabDistance, grabbableLayer))
+        if (Physics.SphereCast(pivot.position, 0.1f, pivot.forward, out hit, testDistance, grabbableLayer))
         {
             objectToPick = hit.collider.gameObject;
+            Debug.Log(hit.distance + " // " + testDistance);
         }
         else
         {
             objectToPick = null;
         }
+
     }
 
     void GrabObject()

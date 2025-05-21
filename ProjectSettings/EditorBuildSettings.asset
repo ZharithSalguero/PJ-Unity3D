@@ -14,5 +14,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Test.unity
     guid: a301f910efa96724286f685a3e9e4a87
+  - enabled: 1
+    path: Assets/Scenes/spmap_mainmenu.unity
+    guid: d26283cdbc6b93748be64aa63d0b4c43
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

@@ -24,6 +24,8 @@ public class PlayerMovement : MonoBehaviour
     public float crouchHeight = 1f;
     public float crawlHeight = 0.5f;
 
+    public float turnTime = 0.1f;
+
     [HideInInspector] public float currentSpeed;
 
     private CharacterController controller;
@@ -71,7 +73,7 @@ public class PlayerMovement : MonoBehaviour
         if (inputDirection.magnitude >= 0.1f)
         {
             float targetAngle = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + cameraTransform.eulerAngles.y;
-            float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref _turnVelocity, 0.1f);
+            float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref _turnVelocity, turnTime);
             transform.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
 
             Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
