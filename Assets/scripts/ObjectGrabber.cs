@@ -6,18 +6,18 @@ public class ObjectGrabber : MonoBehaviour
 {
     public float testDistance = 1f;
     public Transform holdPoint;
-    public LayerMask grabbableLayer; // Capa "Grabbable"
+    public LayerMask grabbableLayer;
     public TMP_Text interactionText;
     public TMP_Text inventoryText;
     public Transform pivot;
-    public float rotationSpeed = 100f; // Nueva variable para ajustar la rotación
+    public float rotationSpeed = 100f;
 
     private Rigidbody grabbedObject;
     private GameObject objectToPick;
     private List<string> inventory = new List<string>();
 
     void Update()
-    { 
+    {
         RaycastForObject();
 
         if (objectToPick != null && grabbedObject == null)
@@ -34,7 +34,6 @@ public class ObjectGrabber : MonoBehaviour
             interactionText.text = "Presiona [ESC] para guardar en inventario";
             MoveObject();
 
-            // Nueva funcionalidad: rotar con R mientras se sostiene
             if (Input.GetKey(KeyCode.R))
             {
                 grabbedObject.transform.Rotate(Vector3.up * rotationSpeed * Time.deltaTime, Space.World);
@@ -65,7 +64,6 @@ public class ObjectGrabber : MonoBehaviour
         {
             objectToPick = null;
         }
-
     }
 
     void GrabObject()
@@ -98,6 +96,7 @@ public class ObjectGrabber : MonoBehaviour
             grabbedObject = null;
         }
     }
+
     void UpdateInventoryText()
     {
         inventoryText.text = "Inventario:\n";
@@ -105,5 +104,11 @@ public class ObjectGrabber : MonoBehaviour
         {
             inventoryText.text += "- " + itemName + "\n";
         }
+    }
+
+    // ✅ NUEVA FUNCIÓN para que la puerta pueda comprobar si tienes la llave
+    public bool HasItem(string itemName)
+    {
+        return inventory.Contains(itemName);
     }
 }
